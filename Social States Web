@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Wellness Retreat · Content Insights</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --terra:#C1603A;--terra-light:#F0E0D6;--terra-mid:#D9856A;--terra-dark:#8B3E22;
+  --sage:#6B8C6E;--sage-light:#E4EDE4;--sage-mid:#8FAF92;--sage-dark:#3E5E41;
+  --cream:#FAF6F0;--cream-dark:#EDE5D8;--brown:#4A3728;--brown-light:#7A6358;
+  --gold:#C49A3C;--gold-light:#F5E9C8;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown);min-height:100vh}
+
+/* Header */
+.header{background:white;border-bottom:1px solid var(--cream-dark);padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header-brand{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--brown)}
+.header-sub{font-size:11px;color:var(--brown-light);letter-spacing:.08em;text-transform:uppercase;margin-top:.15rem}
+.header-badge{font-size:10px;font-weight:500;background:var(--terra-light);color:var(--terra-dark);padding:.35rem .85rem;border-radius:20px;letter-spacing:.04em}
+
+/* Layout */
+.container{max-width:900px;margin:0 auto;padding:2.5rem 2rem 4rem}
+.eyebrow{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--brown-light);margin-bottom:.35rem}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--brown);margin-bottom:.35rem}
+.section-sub{font-size:13.5px;color:var(--brown-light);margin-bottom:1.75rem;line-height:1.65}
+
+/* Tabs */
+.tabs{display:flex;gap:2px;margin-bottom:2.25rem;border-bottom:1.5px solid var(--cream-dark);flex-wrap:wrap}
+.tab{font-size:12px;font-weight:500;padding:.55rem 1.1rem .65rem;border:none;background:none;cursor:pointer;color:var(--brown-light);border-bottom:2px solid transparent;margin-bottom:-1.5px;transition:color .2s;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.tab.active{color:var(--terra);border-bottom-color:var(--terra)}
+.tab:hover:not(.active){color:var(--brown)}
+.panel{display:none}.panel.active{display:block}
+
+/* Metrics */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:2rem}
+.metric{background:var(--cream-dark);border-radius:10px;padding:.9rem 1.1rem}
+.metric-label{font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--brown-light);margin-bottom:.3rem}
+.metric-val{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:500;color:var(--brown);line-height:1}
+.metric-sub{font-size:11px;color:var(--brown-light);margin-top:.2rem}
+.metric input{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:500;color:var(--terra-dark);background:none;border:none;border-bottom:1.5px dashed var(--terra-mid);width:100%;padding:0;outline:none;line-height:1}
+
+/* Findings */
+.findings{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:2rem}
+.finding{border-radius:10px;padding:1.1rem 1.25rem;border-left:3px solid}
+.finding.f1{background:var(--terra-light);border-color:var(--terra)}
+.finding.f2{background:var(--sage-light);border-color:var(--sage)}
+.finding.f3{background:var(--gold-light);border-color:var(--gold)}
+.finding-tag{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem}
+.f1 .finding-tag{color:var(--terra-dark)}
+.f2 .finding-tag{color:var(--sage-dark)}
+.f3 .finding-tag{color:#8B6F20}
+.finding-num{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:500;line-height:1;margin-bottom:.3rem}
+.f1 .finding-num{color:var(--terra)}
+.f2 .finding-num{color:var(--sage)}
+.f3 .finding-num{color:var(--gold)}
+.finding-text{font-size:13px;color:var(--brown);line-height:1.55}
+.bar-rows{display:flex;flex-direction:column;gap:8px;margin-top:.85rem}
+.bar-row{display:flex;align-items:center;gap:8px;font-size:12px}
+.bar-lbl{width:70px;color:var(--brown-light);flex-shrink:0;line-height:1.2}
+.bar-track{flex:1;height:5px;background:rgba(0,0,0,.08);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .5s ease}
+.bar-val{width:36px;text-align:right;color:var(--brown);font-weight:500}
+
+/* Framework steps */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:1rem}
+.step{background:white;border:1px solid var(--cream-dark);border-radius:12px;padding:1.1rem 1.15rem;cursor:pointer;transition:border-color .2s,box-shadow .2s;position:relative}
+.step:hover{border-color:var(--terra-mid);box-shadow:0 2px 12px rgba(193,96,58,.1)}
+.step.open{border-color:var(--terra);box-shadow:0 2px 14px rgba(193,96,58,.15)}
+.step-num{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:400;color:var(--cream-dark);position:absolute;top:.4rem;right:.8rem;line-height:1}
+.step-time{font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--brown-light);margin-bottom:.45rem}
+.step-name{font-size:15px;font-weight:500;color:var(--brown);margin-bottom:.4rem}
+.step-desc{font-size:12.5px;color:var(--brown-light);line-height:1.5}
+.step-detail{display:none;margin-top:.85rem;padding-top:.7rem;border-top:1px solid var(--cream-dark);font-size:13px;color:var(--brown);line-height:1.6}
+.step-detail em{color:var(--terra-dark);font-style:italic}
+.step-detail p+p{margin-top:.55rem}
+.step.open .step-detail{display:block}
+.step-arrow{position:absolute;bottom:.65rem;right:.8rem;font-size:11px;color:var(--terra-mid);transition:transform .2s}
+.step.open .step-arrow{transform:rotate(180deg)}
+
+/* Strategies */
+.strategies{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-top:1rem}
+.strategy{background:white;border:1px solid var(--cream-dark);border-radius:12px;padding:1.1rem 1.25rem;transition:opacity .3s}
+.strategy.done{opacity:.42}
+.strat-head{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:.65rem}
+.strat-title{font-size:14px;font-weight:500;color:var(--brown);line-height:1.35;flex:1}
+.strat-toggle{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--cream-dark);background:none;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent;transition:all .2s}
+.strategy.done .strat-toggle{background:var(--sage);border-color:var(--sage);color:white}
+.badge-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.7rem}
+.badge{font-size:10px;font-weight:500;padding:3px 9px;border-radius:20px}
+.b-hi{background:var(--sage-light);color:var(--sage-dark)}
+.b-med{background:var(--gold-light);color:#7A5E18}
+.b-lo{background:var(--terra-light);color:var(--terra-dark)}
+.strat-impl{font-size:12.5px;color:var(--brown-light);line-height:1.5}
+.strat-impl strong{font-weight:500;color:var(--brown-light)}
+.strat-progress{margin-top:1.25rem;padding:.85rem 1rem;background:var(--cream);border-radius:8px;font-size:12px;color:var(--brown-light)}
+.strat-progress strong{color:var(--sage-dark)}
+
+/* Action plan */
+.weeks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:1rem}
+.week{background:white;border:1px solid var(--cream-dark);border-radius:12px;padding:1.1rem 1.25rem}
+.week-hd{font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;margin-bottom:.85rem;padding-bottom:.55rem;border-bottom:1px solid var(--cream-dark)}
+.wk1 .week-hd{color:var(--terra)}
+.wk2 .week-hd{color:var(--sage-dark)}
+.wk3 .week-hd{color:var(--gold)}
+.task{display:flex;gap:.55rem;margin-bottom:.6rem;align-items:flex-start}
+.task-dot{width:7px;height:7px;border-radius:50%;margin-top:.37rem;flex-shrink:0;cursor:pointer;border:1.5px solid;transition:all .15s}
+.task-dot.done-dot{opacity:1}
+.wk1 .task-dot{border-color:var(--terra);background:transparent}
+.wk1 .task-dot.done-dot{background:var(--terra)}
+.wk2 .task-dot{border-color:var(--sage-dark);background:transparent}
+.wk2 .task-dot.done-dot{background:var(--sage-dark)}
+.wk3 .task-dot{border-color:var(--gold);background:transparent}
+.wk3 .task-dot.done-dot{background:var(--gold)}
+.task-txt{font-size:13px;color:var(--brown-light);line-height:1.45;cursor:pointer;transition:color .15s}
+.task-txt.done-txt{text-decoration:line-through;color:#b0a09a}
+.task-edit{font-size:13px;color:var(--brown);background:none;border:none;border-bottom:1px dashed var(--terra-mid);outline:none;width:100%;font-family:'DM Sans',sans-serif;padding:0;line-height:1.45}
+.add-task{font-size:12px;color:var(--terra-mid);background:none;border:none;cursor:pointer;padding:.3rem 0;margin-top:.35rem;font-family:'DM Sans',sans-serif}
+.add-task:hover{color:var(--terra)}
+
+/* Week on week */
+.wow-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:1rem}
+@media(max-width:600px){.wow-grid{grid-template-columns:1fr}}
+.wow-col{background:white;border:1px solid var(--cream-dark);border-radius:12px;padding:1.1rem 1.25rem}
+.wow-col-hd{font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;margin-bottom:.9rem;padding-bottom:.5rem;border-bottom:1px solid var(--cream-dark)}
+.wow-col.working .wow-col-hd{color:var(--sage-dark)}
+.wow-col.not-working .wow-col-hd{color:var(--terra-dark)}
+.wow-item{display:flex;align-items:flex-start;gap:.55rem;margin-bottom:.7rem}
+.wow-dot{width:6px;height:6px;border-radius:50%;margin-top:.42rem;flex-shrink:0}
+.working .wow-dot{background:var(--sage)}
+.not-working .wow-dot{background:var(--terra)}
+.wow-txt{font-size:13px;color:var(--brown);line-height:1.45}
+.wow-stat{font-size:11px;color:var(--brown-light);margin-top:.1rem}
+.wow-input-row{display:flex;gap:.5rem;margin-top:.85rem;align-items:center}
+.wow-input{font-size:12.5px;flex:1;padding:.4rem .75rem;border:1px solid var(--cream-dark);border-radius:7px;color:var(--brown);font-family:'DM Sans',sans-serif;background:var(--cream);outline:none}
+.wow-input:focus{border-color:var(--terra-mid)}
+.wow-add-btn{font-size:11.5px;padding:.35rem .75rem;background:var(--terra-light);border:1px solid var(--terra-mid);border-radius:7px;color:var(--terra-dark);cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.wow-add-btn:hover{background:var(--terra-mid);color:white}
+.wow-remove{font-size:10px;color:var(--brown-light);background:none;border:none;cursor:pointer;margin-left:auto;padding:.1rem .3rem;opacity:0;transition:opacity .15s;font-family:'DM Sans',sans-serif}
+.wow-item:hover .wow-remove{opacity:1}
+.wow-item{position:relative}
+
+/* Divider */
+.divider{height:1px;background:var(--cream-dark);margin:2rem 0}
+
+/* Footer */
+.footer{text-align:center;padding:2rem;font-size:11px;color:var(--brown-light);letter-spacing:.05em;border-top:1px solid var(--cream-dark);margin-top:3rem}
+
+/* Responsive */
+@media(max-width:640px){
+  .container{padding:1.5rem 1rem 3rem}
+  .header{padding:1rem 1.25rem}
+  .section-title{font-size:22px}
+  .step-num{font-size:28px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-brand">Content Insights</div>
+    <div class="header-sub">Wellness &amp; Retreats · Strategy Dashboard</div>
+  </div>
+  <span class="header-badge">Team View</span>
+</div>
+
+<div class="container">
+  <p class="eyebrow">Content intelligence</p>
+  <h1 class="section-title">Deep insights &amp; strategy</h1>
+  <p class="section-sub">Edit your metrics, explore the narrative framework, track what's working, and manage your action plan — all in one place.</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showPanel('overview',this)">Overview</button>
+    <button class="tab" onclick="showPanel('framework',this)">Narrative framework</button>
+    <button class="tab" onclick="showPanel('monetise',this)">Monetisation</button>
+    <button class="tab" onclick="showPanel('plan',this)">Action plan</button>
+    <button class="tab" onclick="showPanel('wow',this)">Week on week</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="panel active" id="panel-overview">
+    <p class="eyebrow">Your metrics — click to edit</p>
+    <div class="metrics">
+      <div class="metric"><p class="metric-label">Long vs short views</p><input id="m-longviews" value="3.5×" oninput="updateFindings()"/><p class="metric-sub">long video advantage</p></div>
+      <div class="metric"><p class="metric-label">High eng. rate</p><input id="m-eng-hi" value="8.58%" oninput="updateFindings()"/><p class="metric-sub">64s post</p></div>
+      <div class="metric"><p class="metric-label">Low eng. rate</p><input id="m-eng-lo" value="4.73%" oninput="updateFindings()"/><p class="metric-sub">37s post</p></div>
+      <div class="metric"><p class="metric-label">Shares corr.</p><input id="m-shares" value="0.80" oninput="updateFindings()"/><p class="metric-sub">duration ↔ shares</p></div>
+      <div class="metric"><p class="metric-label">Saves corr.</p><input id="m-saves" value="0.82" oninput="updateFindings()"/><p class="metric-sub">duration ↔ saves</p></div>
+    </div>
+
+    <div class="divider"></div>
+    <p class="eyebrow">Key findings</p>
+    <div class="findings">
+      <div class="finding f1">
+        <p class="finding-tag">Duration correlation</p>
+        <p class="finding-num" id="fn-saves">0.82</p>
+        <p class="finding-text">Correlation with saves. Long video outperformed short by <span id="fn-views">3.5×</span> in total views.</p>
+        <div class="bar-rows">
+          <div class="bar-row"><span class="bar-lbl">Shares</span><div class="bar-track"><div class="bar-fill" id="bar-shares" style="width:80%;background:var(--terra)"></div></div><span class="bar-val" id="bv-shares">0.80</span></div>
+          <div class="bar-row"><span class="bar-lbl">Saves</span><div class="bar-track"><div class="bar-fill" id="bar-saves" style="width:82%;background:var(--terra-dark)"></div></div><span class="bar-val" id="bv-saves">0.82</span></div>
+        </div>
+      </div>
+      <div class="finding f2">
+        <p class="finding-tag">Narrative depth</p>
+        <p class="finding-num" id="fn-enghi">8.58%</p>
+        <p class="finding-text">Engagement on long post vs <span id="fn-englo">4.73%</span> for shorter — depth drives real connection.</p>
+        <div class="bar-rows">
+          <div class="bar-row"><span class="bar-lbl">Long post</span><div class="bar-track"><div class="bar-fill" id="bar-enghi" style="width:85.8%;background:var(--sage)"></div></div><span class="bar-val" id="bv-enghi">8.6%</span></div>
+          <div class="bar-row"><span class="bar-lbl">Short post</span><div class="bar-track"><div class="bar-fill" id="bar-englo" style="width:47.3%;background:var(--sage-mid)"></div></div><span class="bar-val" id="bv-englo">4.7%</span></div>
+        </div>
+      </div>
+      <div class="finding f3">
+        <p class="finding-tag">Audience insight</p>
+        <p class="finding-num" style="font-size:24px;padding-top:.25rem">Immersion</p>
+        <p class="finding-text">Your audience craves slow-living depth — not quick clips. They hunger for narrative, not highlights.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FRAMEWORK -->
+  <div class="panel" id="panel-framework">
+    <p class="eyebrow">Content structure</p>
+    <h2 class="section-title">The slow narrative framework</h2>
+    <p class="section-sub">Click each stage to reveal full guidance and examples for your team.</p>
+    <div class="steps">
+      <div class="step" onclick="toggleStep(this)">
+        <span class="step-num">1</span>
+        <p class="step-time">0 – 10 sec</p>
+        <p class="step-name">The hook</p>
+        <p class="step-desc">Address a resonant emotional pain point immediately.</p>
+        <div class="step-detail">
+          <p>Open with a line that mirrors what your ideal guest feels every day — <em>"People often arrive a little tired without fully realising it."</em></p>
+          <p>Identify the exact emotional trigger: burnout, overstimulation, or disconnection from self. Name it out loud in the first breath. Viewers who hear themselves in that opening will stay.</p>
+        </div>
+        <span class="step-arrow">▾</span>
+      </div>
+      <div class="step" onclick="toggleStep(this)">
+        <span class="step-num">2</span>
+        <p class="step-time">10 – 45 sec</p>
+        <p class="step-name">The immersion</p>
+        <p class="step-desc">ASMR, slow pans, and rhythmic editing lower the heart rate.</p>
+        <div class="step-detail">
+          <p>Use 3–5 second shots. No jump cuts. Let sound design carry the scene — birds, terracotta on stone, linen rustling. Slow motion in small doses.</p>
+          <p>The goal is to produce a <em>felt shift in the viewer's nervous system</em> before any CTA. They should exhale before they ever see a price.</p>
+        </div>
+        <span class="step-arrow">▾</span>
+      </div>
+      <div class="step" onclick="toggleStep(this)">
+        <span class="step-num">3</span>
+        <p class="step-time">45 – 60 sec</p>
+        <p class="step-name">The shift</p>
+        <p class="step-desc">Introduce the environment that enables transformation.</p>
+        <div class="step-detail">
+          <p>Show what changes when someone arrives. The villa, the morning light, the communal table. Make the environment feel like a character, not a backdrop.</p>
+          <p>Add a subtle text overlay at 45s: <em>"Spaces for May are filling…"</em> — this plants scarcity gently before the CTA lands.</p>
+        </div>
+        <span class="step-arrow">▾</span>
+      </div>
+      <div class="step" onclick="toggleStep(this)">
+        <span class="step-num">4</span>
+        <p class="step-time">60+ sec</p>
+        <p class="step-name">The call to action</p>
+        <p class="step-desc">Clear, warm, specific. This is where monetisation happens.</p>
+        <div class="step-detail">
+          <p>Don't break the spell with hard-sell language. Invite: <em>"Comment RETREAT and we'll send the details."</em> Let the automation do the selling.</p>
+          <p>Ensure your auto-response includes a direct booking link or a beautifully formatted PDF brochure. The CTA is only as strong as what follows it.</p>
+        </div>
+        <span class="step-arrow">▾</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MONETISE -->
+  <div class="panel" id="panel-monetise">
+    <p class="eyebrow">Revenue opportunities</p>
+    <h2 class="section-title">Monetisation strategies</h2>
+    <p class="section-sub">Toggle each strategy as complete when your team has implemented it.</p>
+    <div class="strategies">
+      <div class="strategy" id="s1">
+        <div class="strat-head"><p class="strat-title">Mid-roll CTA placement</p><button class="strat-toggle" onclick="toggleStrat('s1')">✓</button></div>
+        <div class="badge-row"><span class="badge b-hi">High impact</span><span class="badge b-lo">Low effort</span></div>
+        <p class="strat-impl"><strong>How:</strong> Add a text overlay at 45s in your video editor — right before the emotional peak. One line, no hard sell.</p>
+      </div>
+      <div class="strategy" id="s2">
+        <div class="strat-head"><p class="strat-title">Value-add saves content</p><button class="strat-toggle" onclick="toggleStrat('s2')">✓</button></div>
+        <div class="badge-row"><span class="badge b-hi">High impact</span><span class="badge b-med">Medium effort</span></div>
+        <p class="strat-impl"><strong>How:</strong> Produce 2–3 educational Reels/week at 90s+ — "A perfect slow morning in Tuscany." Saves drive algorithmic reach more than any other signal.</p>
+      </div>
+      <div class="strategy" id="s3">
+        <div class="strat-head"><p class="strat-title">Direct booking integration</p><button class="strat-toggle" onclick="toggleStrat('s3')">✓</button></div>
+        <div class="badge-row"><span class="badge b-hi">High impact</span><span class="badge b-lo">Low effort</span></div>
+        <p class="strat-impl"><strong>How:</strong> Update the "RETREAT" auto-response to include a direct booking link or a high-quality PDF brochure immediately.</p>
+      </div>
+      <div class="strategy" id="s4">
+        <div class="strat-head"><p class="strat-title">Seasonal content blocks</p><button class="strat-toggle" onclick="toggleStrat('s4')">✓</button></div>
+        <div class="badge-row"><span class="badge b-med">Medium impact</span><span class="badge b-med">Medium effort</span></div>
+        <p class="strat-impl"><strong>How:</strong> Plan content 2–3 weeks around retreat dates with countdown elements. Limited availability language increases urgency without aggression.</p>
+      </div>
+    </div>
+    <div id="strat-summary" style="margin-top:1.5rem;padding:1rem 1.25rem;background:var(--sage-light);border-radius:10px;font-size:13px;color:var(--sage-dark);display:none">
+      <strong id="strat-count">0 of 4</strong> strategies complete · great progress!
+    </div>
+  </div>
+
+  <!-- ACTION PLAN -->
+  <div class="panel" id="panel-plan">
+    <p class="eyebrow">Execution roadmap</p>
+    <h2 class="section-title">3-week action plan</h2>
+    <p class="section-sub">Click a dot to tick off a task. Double-click text to edit it. Add new tasks with the button below each week.</p>
+    <div class="weeks">
+      <div class="week wk1" id="wk1">
+        <p class="week-hd">Week 1 — Build</p>
+        <div class="task"><span class="task-dot" onclick="toggleTask(this)"></span><span class="task-txt" ondblclick="editTask(this)">Produce two 90s Reels: "A Day in the Life" or "History of the Villa"</span></div>
+        <div class="task"><span class="task-dot" onclick="toggleTask(this)"></span><span class="task-txt" ondblclick="editTask(this)">Test new hook: "You're not burnt out, you're under-stimulated"</span></div>
+        <div class="task"><span class="task-dot" onclick="toggleTask(this)"></span><span class="task-txt" ondblclick="editTask(this)">Set up mid-roll CTA text overlays in your video editor</span></div>
+        <button class="add-task" onclick="addTask('wk1')">+ add task</button>
+      </div>
+      <div class="week wk2" id="wk2">
+        <p class="week-hd">Week 2 — Launch</p>
+        <div class="task"><span class="task-dot" onclick="toggleTask(this)"></span><span class="task-txt" ondblclick="editTask(this)">Launch "Educational Slow Living" series (3 tips for unplugging)</span></div>
+        <div class="task"><span class="task-dot" onclick="toggleTask(this)"></span><span class="task-txt" ondblclick="editTask(this)">Optimise "RETREAT" auto-response with direct booking link</span></div>
+        <div class="task"><span class="task-dot" onclick="toggleTask(this)"></span><span class="task-txt" ondblclick="editTask(this)">Analyse performance of new 90s content vs baseline</span></div>
+        <button class="add-task" onclick="addTask('wk2')">+ add task</button>
+      </div>
+      <div class="week wk3" id="wk3">
+        <p class="week-hd">Week 3 — Scale</p>
+        <div class="task"><span class="task-dot" onclick="toggleTask(this)"></span><span class="task-txt" ondblclick="editTask(this)">Create seasonal content block for May 23–30 retreat</span></div>
+        <div class="task"><span class="task-dot" onclick="toggleTask(this)"></span><span class="task-txt" ondblclick="editTask(this)">Produce high-value "How to" guides at 120s+</span></div>
+        <div class="task"><span class="task-dot" onclick="toggleTask(this)"></span><span class="task-txt" ondblclick="editTask(this)">Review engagement metrics and refine strategy</span></div>
+        <button class="add-task" onclick="addTask('wk3')">+ add task</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK ON WEEK -->
+  <div class="panel" id="panel-wow">
+    <p class="eyebrow">Performance review</p>
+    <h2 class="section-title">Week on week — what's working</h2>
+    <p class="section-sub">Log what's performing and what isn't each week. Hover over any item to remove it.</p>
+    <div class="wow-grid">
+      <div class="wow-col working">
+        <p class="wow-col-hd">✦ Working well</p>
+        <div id="wow-working-list">
+          <div class="wow-item"><span class="wow-dot"></span><div style="flex:1"><p class="wow-txt">64s villa morning routine</p><p class="wow-stat">8.58% eng · 3.2k saves</p></div><button class="wow-remove" onclick="this.closest('.wow-item').remove()">✕</button></div>
+          <div class="wow-item"><span class="wow-dot"></span><div style="flex:1"><p class="wow-txt">"People arrive tired" narrative hook</p><p class="wow-stat">4.1k shares · top comment: "this is me"</p></div><button class="wow-remove" onclick="this.closest('.wow-item').remove()">✕</button></div>
+          <div class="wow-item"><span class="wow-dot"></span><div style="flex:1"><p class="wow-txt">ASMR slow-pan Reels 90s+</p><p class="wow-stat">High save rate across all posts</p></div><button class="wow-remove" onclick="this.closest('.wow-item').remove()">✕</button></div>
+        </div>
+        <div class="wow-input-row">
+          <input class="wow-input" id="wow-working-input" placeholder="Add what's working…" onkeydown="if(event.key==='Enter')addWow('working')"/>
+          <button class="wow-add-btn" onclick="addWow('working')">Add</button>
+        </div>
+      </div>
+      <div class="wow-col not-working">
+        <p class="wow-col-hd">✕ Not working</p>
+        <div id="wow-notworking-list">
+          <div class="wow-item"><span class="wow-dot"></span><div style="flex:1"><p class="wow-txt">21s highlight clips</p><p class="wow-stat">4.73% eng · low saves, low shares</p></div><button class="wow-remove" onclick="this.closest('.wow-item').remove()">✕</button></div>
+          <div class="wow-item"><span class="wow-dot"></span><div style="flex:1"><p class="wow-txt">Promotional-first captions</p><p class="wow-stat">Drop-off before 15s mark</p></div><button class="wow-remove" onclick="this.closest('.wow-item').remove()">✕</button></div>
+          <div class="wow-item"><span class="wow-dot"></span><div style="flex:1"><p class="wow-txt">Posting without a CTA</p><p class="wow-stat">Strong views but no conversion</p></div><button class="wow-remove" onclick="this.closest('.wow-item').remove()">✕</button></div>
+        </div>
+        <div class="wow-input-row">
+          <input class="wow-input" id="wow-notworking-input" placeholder="Add what's not working…" onkeydown="if(event.key==='Enter')addWow('notworking')"/>
+          <button class="wow-add-btn" onclick="addWow('notworking')">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">Wellness &amp; Retreats · Content Strategy Dashboard · Updated April 2026</div>
+
+<script>
+function showPanel(id, btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+function toggleStep(el){el.classList.toggle('open')}
+function toggleStrat(id){
+  const s=document.getElementById(id);
+  s.classList.toggle('done');
+  const btn=s.querySelector('.strat-toggle');
+  const done=s.classList.contains('done');
+  btn.style.background=done?'var(--sage)':'';
+  btn.style.borderColor=done?'var(--sage)':'';
+  btn.style.color=done?'white':'transparent';
+  const total=document.querySelectorAll('.strategy').length;
+  const count=document.querySelectorAll('.strategy.done').length;
+  const summary=document.getElementById('strat-summary');
+  summary.style.display=count>0?'block':'none';
+  document.getElementById('strat-count').textContent=count+' of '+total;
+}
+function toggleTask(dot){
+  dot.classList.toggle('done-dot');
+  const txt=dot.nextElementSibling;
+  if(txt&&txt.classList.contains('task-txt'))txt.classList.toggle('done-txt');
+}
+function editTask(el){
+  const val=el.textContent;
+  const input=document.createElement('input');
+  input.className='task-edit';input.value=val;
+  el.replaceWith(input);input.focus();input.select();
+  function finish(){
+    const span=document.createElement('span');
+    span.className='task-txt';span.textContent=input.value||val;
+    span.ondblclick=function(){editTask(this)};
+    input.replaceWith(span);
+  }
+  input.onblur=finish;
+  input.onkeydown=function(e){if(e.key==='Enter')finish()};
+}
+function addTask(weekId){
+  const week=document.getElementById(weekId);
+  const btn=week.querySelector('.add-task');
+  const div=document.createElement('div');div.className='task';
+  const dot=document.createElement('span');dot.className='task-dot';
+  dot.onclick=function(){toggleTask(this)};
+  const input=document.createElement('input');
+  input.className='task-edit';input.placeholder='New task…';
+  div.appendChild(dot);div.appendChild(input);
+  week.insertBefore(div,btn);input.focus();
+  function finish(){
+    if(!input.value.trim()){div.remove();return}
+    const span=document.createElement('span');
+    span.className='task-txt';span.textContent=input.value;
+    span.ondblclick=function(){editTask(this)};
+    input.replaceWith(span);
+  }
+  input.onblur=finish;
+  input.onkeydown=function(e){if(e.key==='Enter')finish()};
+}
+function addWow(type){
+  const input=document.getElementById('wow-'+type+'-input');
+  const val=input.value.trim();if(!val)return;
+  const list=document.getElementById('wow-'+type+'-list');
+  const div=document.createElement('div');div.className='wow-item';
+  div.innerHTML='<span class="wow-dot"></span><div style="flex:1"><p class="wow-txt">'+val+'</p></div><button class="wow-remove" onclick="this.closest(\'.wow-item\').remove()">✕</button>';
+  list.appendChild(div);input.value='';input.focus();
+}
+function updateFindings(){
+  const saves=document.getElementById('m-saves').value;
+  const shares=document.getElementById('m-shares').value;
+  const enghi=document.getElementById('m-eng-hi').value;
+  const englo=document.getElementById('m-eng-lo').value;
+  const views=document.getElementById('m-longviews').value;
+  document.getElementById('fn-saves').textContent=saves;
+  document.getElementById('fn-views').textContent=views;
+  document.getElementById('fn-enghi').textContent=enghi;
+  document.getElementById('fn-englo').textContent=englo;
+  document.getElementById('bv-shares').textContent=shares;
+  document.getElementById('bv-saves').textContent=saves;
+  document.getElementById('bv-enghi').textContent=enghi;
+  document.getElementById('bv-englo').textContent=englo;
+  const sv=parseFloat(saves)||0,sh=parseFloat(shares)||0;
+  const eh=parseFloat(enghi)||0,el=parseFloat(englo)||0;
+  document.getElementById('bar-shares').style.width=Math.min(sh*100,100)+'%';
+  document.getElementById('bar-saves').style.width=Math.min(sv*100,100)+'%';
+  const mx=Math.max(eh,el,1);
+  document.getElementById('bar-enghi').style.width=Math.min((eh/mx)*100,100)+'%';
+  document.getElementById('bar-englo').style.width=Math.min((el/mx)*100,100)+'%';
+}
+</script>
+</body>
+</html>
