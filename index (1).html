@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Casa Vecchia Villas · Content Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--terra:#C1603A;--terra-l:#F0E0D6;--terra-m:#D9856A;--terra-d:#8B3E22;--sage:#6B8C6E;--sage-l:#E4EDE4;--sage-m:#8FAF92;--sage-d:#3E5E41;--cream:#FAF6F0;--cream-d:#EDE5D8;--brown:#4A3728;--brown-l:#7A6358;--gold:#C49A3C;--gold-l:#F5E9C8;--white:#fff;--ig:#E1306C;--fb:#1877F2}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown);min-height:100vh}
+.hdr{background:var(--white);border-bottom:1px solid var(--cream-d);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
+.hdr-brand{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500}
+.hdr-sub{font-size:11px;color:var(--brown-l);letter-spacing:.08em;text-transform:uppercase;margin-top:.1rem}
+.upload-btn{display:flex;align-items:center;gap:.4rem;font-size:12px;font-weight:500;background:var(--terra);color:var(--white);border:none;border-radius:8px;padding:.45rem 1rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s}
+.upload-btn:hover{background:var(--terra-d)}
+.badge-team{font-size:10px;font-weight:500;background:var(--terra-l);color:var(--terra-d);padding:.3rem .8rem;border-radius:20px}
+.nav{background:var(--white);border-bottom:1px solid var(--cream-d);padding:0 2rem;display:flex;overflow-x:auto}
+.nav-tab{font-size:12.5px;font-weight:500;padding:.75rem 1.1rem;border:none;background:none;cursor:pointer;color:var(--brown-l);border-bottom:2.5px solid transparent;white-space:nowrap;font-family:'DM Sans',sans-serif;transition:color .2s}
+.nav-tab.active{color:var(--terra);border-bottom-color:var(--terra)}
+.nav-tab:hover:not(.active){color:var(--brown)}
+.container{max-width:1000px;margin:0 auto;padding:2rem 1.5rem 4rem}
+.panel{display:none}.panel.active{display:block}
+.eyebrow{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--brown-l);margin-bottom:.3rem}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--brown);margin-bottom:.3rem}
+.section-sub{font-size:13px;color:var(--brown-l);margin-bottom:1.5rem;line-height:1.65}
+.divider{height:1px;background:var(--cream-d);margin:2rem 0}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1.75rem}
+.metric{background:var(--cream-d);border-radius:10px;padding:.9rem 1.1rem}
+.metric-label{font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--brown-l);margin-bottom:.3rem}
+.metric-val{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--brown);line-height:1}
+.metric-sub{font-size:11px;margin-top:.2rem}
+.up{color:#3E5E41}.down{color:var(--terra)}.neu{color:var(--brown-l)}
+.pill{display:inline-flex;align-items:center;gap:.3rem;font-size:10px;font-weight:500;padding:.2rem .6rem;border-radius:20px;letter-spacing:.04em}
+.pill.ig{background:#fce4ec;color:#ad1457}.pill.fb{background:#e3f2fd;color:#1565c0}
+.chart-card{background:var(--white);border:1px solid var(--cream-d);border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.25rem}
+.chart-title{font-size:14px;font-weight:500;color:var(--brown);margin-bottom:.2rem}
+.chart-sub{font-size:12px;color:var(--brown-l);margin-bottom:1rem}
+.chart-wrap{position:relative;width:100%;height:250px}
+.wow-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.wow-col{background:var(--white);border:1px solid var(--cream-d);border-radius:12px;padding:1.1rem 1.25rem}
+.wow-col-hd{font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;margin-bottom:.85rem;padding-bottom:.5rem;border-bottom:1px solid var(--cream-d)}
+.wow-col.working .wow-col-hd{color:var(--sage-d)}.wow-col.not-working .wow-col-hd{color:var(--terra-d)}
+.wow-item{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.65rem;position:relative}
+.wow-dot{width:6px;height:6px;border-radius:50%;margin-top:.42rem;flex-shrink:0}
+.working .wow-dot{background:var(--sage)}.not-working .wow-dot{background:var(--terra)}
+.wow-txt{font-size:13px;color:var(--brown);line-height:1.45}
+.wow-stat{font-size:11px;color:var(--brown-l);margin-top:.1rem}
+.wow-rm{font-size:10px;color:var(--brown-l);background:none;border:none;cursor:pointer;margin-left:auto;padding:.1rem .3rem;opacity:0;transition:opacity .15s;font-family:'DM Sans',sans-serif;flex-shrink:0}
+.wow-item:hover .wow-rm{opacity:1}
+.wow-input-row{display:flex;gap:.5rem;margin-top:.85rem}
+.wow-input{font-size:12.5px;flex:1;padding:.4rem .75rem;border:1px solid var(--cream-d);border-radius:7px;color:var(--brown);font-family:'DM Sans',sans-serif;background:var(--cream);outline:none}
+.wow-input:focus{border-color:var(--terra-m)}
+.wow-add{font-size:11.5px;padding:.35rem .75rem;background:var(--terra-l);border:1px solid var(--terra-m);border-radius:7px;color:var(--terra-d);cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.wow-add:hover{background:var(--terra-m);color:var(--white)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.step{background:var(--white);border:1px solid var(--cream-d);border-radius:12px;padding:1.1rem;cursor:pointer;position:relative;transition:border-color .2s}
+.step:hover{border-color:var(--terra-m)}.step.open{border-color:var(--terra)}
+.step-num{font-family:'Cormorant Garamond',serif;font-size:36px;color:var(--cream-d);position:absolute;top:.4rem;right:.75rem;line-height:1}
+.step-time{font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--brown-l);margin-bottom:.4rem}
+.step-name{font-size:14px;font-weight:500;color:var(--brown);margin-bottom:.35rem}
+.step-desc{font-size:12px;color:var(--brown-l);line-height:1.5}
+.step-detail{display:none;margin-top:.75rem;padding-top:.65rem;border-top:1px solid var(--cream-d);font-size:12.5px;color:var(--brown);line-height:1.6}
+.step-detail em{color:var(--terra-d);font-style:italic}
+.step-detail p+p{margin-top:.5rem}
+.step.open .step-detail{display:block}
+.step-arrow{position:absolute;bottom:.6rem;right:.75rem;font-size:10px;color:var(--terra-m);transition:transform .2s}
+.step.open .step-arrow{transform:rotate(180deg)}
+.strategies{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.strategy{background:var(--white);border:1px solid var(--cream-d);border-radius:12px;padding:1.1rem 1.25rem;transition:opacity .3s}
+.strategy.done{opacity:.4}
+.strat-head{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:.6rem}
+.strat-title{font-size:14px;font-weight:500;color:var(--brown);flex:1;line-height:1.35}
+.strat-toggle{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--cream-d);background:none;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent;transition:all .2s}
+.strategy.done .strat-toggle{background:var(--sage);border-color:var(--sage);color:var(--white)}
+.badge-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.65rem}
+.badge{font-size:10px;font-weight:500;padding:2px 9px;border-radius:20px}
+.b-hi{background:var(--sage-l);color:var(--sage-d)}.b-med{background:var(--gold-l);color:#7A5E18}.b-lo{background:var(--terra-l);color:var(--terra-d)}
+.strat-impl{font-size:12px;color:var(--brown-l);line-height:1.5}
+.strat-impl strong{font-weight:500;color:var(--brown-l)}
+.weeks{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.week{background:var(--white);border:1px solid var(--cream-d);border-radius:12px;padding:1.1rem 1.25rem}
+.week-hd{font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;margin-bottom:.8rem;padding-bottom:.5rem;border-bottom:1px solid var(--cream-d)}
+.wk1 .week-hd{color:var(--terra)}.wk2 .week-hd{color:var(--sage-d)}.wk3 .week-hd{color:var(--gold)}
+.task{display:flex;gap:.5rem;margin-bottom:.55rem;align-items:flex-start}
+.task-dot{width:7px;height:7px;border-radius:50%;margin-top:.35rem;flex-shrink:0;cursor:pointer;border:1.5px solid;transition:all .15s}
+.wk1 .task-dot{border-color:var(--terra)}.wk1 .task-dot.done{background:var(--terra)}
+.wk2 .task-dot{border-color:var(--sage-d)}.wk2 .task-dot.done{background:var(--sage-d)}
+.wk3 .task-dot{border-color:var(--gold)}.wk3 .task-dot.done{background:var(--gold)}
+.task-txt{font-size:12.5px;color:var(--brown-l);line-height:1.45;cursor:pointer}
+.task-txt.done{text-decoration:line-through;color:#b0a09a}
+.task-edit{font-size:12.5px;color:var(--brown);background:none;border:none;border-bottom:1px dashed var(--terra-m);outline:none;width:100%;font-family:'DM Sans',sans-serif;padding:0}
+.add-task{font-size:12px;color:var(--terra-m);background:none;border:none;cursor:pointer;padding:.25rem 0;margin-top:.3rem;font-family:'DM Sans',sans-serif}
+.add-task:hover{color:var(--terra)}
+.trending-controls{display:flex;gap:.5rem;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center}
+.filter-btn{font-size:11px;font-weight:500;padding:.3rem .85rem;border-radius:20px;border:1px solid var(--cream-d);background:var(--white);color:var(--brown-l);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.filter-btn.active{background:var(--brown);color:var(--white);border-color:var(--brown)}
+.filter-btn.ig-f.active{background:#E1306C;border-color:#E1306C}
+.filter-btn.fb-f.active{background:#1877F2;border-color:#1877F2}
+.content-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.content-card{background:var(--white);border:1px solid var(--cream-d);border-radius:12px;overflow:hidden;transition:box-shadow .2s}
+.content-card:hover{box-shadow:0 4px 16px rgba(74,55,40,.1)}
+.content-thumb-placeholder{width:100%;height:155px;display:flex;align-items:center;justify-content:center;font-size:40px}
+.content-body{padding:.9rem 1rem}
+.content-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
+.content-date{font-size:10px;color:var(--brown-l)}
+.content-caption{font-size:13px;color:var(--brown);line-height:1.5;margin-bottom:.75rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.content-stats{display:flex;gap:.85rem;margin-bottom:.75rem;flex-wrap:wrap}
+.content-stat{display:flex;align-items:center;gap:.3rem;font-size:11.5px;color:var(--brown-l)}
+.content-stat svg{width:13px;height:13px;flex-shrink:0}
+.content-like-row{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--cream-d);padding-top:.65rem}
+.like-btn{display:flex;align-items:center;gap:.35rem;font-size:12px;font-weight:500;background:none;border:1.5px solid var(--cream-d);border-radius:20px;padding:.3rem .85rem;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--brown-l);transition:all .2s}
+.like-btn:hover{border-color:var(--terra-m);color:var(--terra)}
+.like-btn.liked{background:var(--terra-l);border-color:var(--terra-m);color:var(--terra)}
+.like-btn svg{width:13px;height:13px;transition:transform .15s}
+.like-btn.liked svg{transform:scale(1.2)}
+.content-eng{font-size:11px;font-weight:500;padding:.2rem .6rem;border-radius:20px}
+.eng-hi{background:var(--sage-l);color:var(--sage-d)}.eng-med{background:var(--gold-l);color:#7A5E18}.eng-lo{background:var(--terra-l);color:var(--terra-d)}
+.findings{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-bottom:1.75rem}
+.finding{border-radius:10px;padding:1.1rem 1.25rem;border-left:3px solid}
+.f1{background:var(--terra-l);border-color:var(--terra)}.f2{background:var(--sage-l);border-color:var(--sage)}.f3{background:var(--gold-l);border-color:var(--gold)}
+.finding-tag{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem}
+.f1 .finding-tag{color:var(--terra-d)}.f2 .finding-tag{color:var(--sage-d)}.f3 .finding-tag{color:#8B6F20}
+.finding-num{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:500;line-height:1;margin-bottom:.3rem}
+.f1 .finding-num{color:var(--terra)}.f2 .finding-num{color:var(--sage)}.f3 .finding-num{color:var(--gold)}
+.finding-text{font-size:13px;color:var(--brown);line-height:1.55}
+.bar-rows{display:flex;flex-direction:column;gap:8px;margin-top:.75rem}
+.bar-row{display:flex;align-items:center;gap:8px;font-size:12px}
+.bar-lbl{width:70px;color:var(--brown-l);flex-shrink:0}
+.bar-track{flex:1;height:5px;background:rgba(0,0,0,.07);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px}
+.bar-val{width:36px;text-align:right;color:var(--brown);font-weight:500}
+.modal-overlay{position:fixed;inset:0;background:rgba(74,55,40,.4);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.hidden{display:none}
+.modal{background:var(--white);border-radius:16px;padding:2rem;max-width:480px;width:100%}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;margin-bottom:.3rem}
+.modal-sub{font-size:13px;color:var(--brown-l);margin-bottom:1.5rem;line-height:1.6}
+.drop-zone{border:2px dashed var(--cream-d);border-radius:10px;padding:2rem 1rem;text-align:center;cursor:pointer;transition:border-color .2s;background:var(--cream)}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--terra-m);background:var(--terra-l)}
+.dz-icon{font-size:32px;margin-bottom:.75rem}
+.dz-text{font-size:13px;color:var(--brown-l);line-height:1.6}
+.dz-text strong{color:var(--terra);font-weight:500}
+.modal-fields{margin-top:1.25rem;display:flex;flex-direction:column;gap:.75rem}
+.field-label{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--brown-l);margin-bottom:.3rem}
+.field-input{width:100%;padding:.5rem .75rem;border:1px solid var(--cream-d);border-radius:8px;font-size:13px;color:var(--brown);font-family:'DM Sans',sans-serif;background:var(--cream);outline:none}
+.field-input:focus{border-color:var(--terra-m)}
+.modal-actions{display:flex;gap:.75rem;margin-top:1.5rem;justify-content:flex-end}
+.btn-cancel{font-size:13px;padding:.5rem 1.1rem;border:1px solid var(--cream-d);background:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--brown-l)}
+.btn-import{font-size:13px;padding:.5rem 1.25rem;background:var(--terra);color:var(--white);border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500}
+.btn-import:hover{background:var(--terra-d)}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--brown);color:var(--white);font-size:13px;padding:.65rem 1.25rem;border-radius:30px;z-index:600;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+.footer{text-align:center;padding:2rem;font-size:11px;color:var(--brown-l);border-top:1px solid var(--cream-d)}
+@media(max-width:640px){.container{padding:1.25rem 1rem 3rem}.hdr{padding:.85rem 1rem}.nav{padding:0 1rem}.wow-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500">Casa Vecchia Villas</div>
+    <div class="hdr-sub">Content Strategy Dashboard</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:.75rem">
+    <button class="upload-btn" onclick="openModal()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+      Import META Data
+    </button>
+    <span class="badge-team">Team View</span>
+  </div>
+</div>
+<div class="nav">
+  <button class="nav-tab active" onclick="showPanel('overview',this)">Overview</button>
+  <button class="nav-tab" onclick="showPanel('wow',this)">Week on Week</button>
+  <button class="nav-tab" onclick="showPanel('trending',this)">Trending Content</button>
+  <button class="nav-tab" onclick="showPanel('framework',this)">Narrative Framework</button>
+  <button class="nav-tab" onclick="showPanel('monetise',this)">Monetisation</button>
+  <button class="nav-tab" onclick="showPanel('plan',this)">Action Plan</button>
+</div>
+<div class="container">
+
+<!-- OVERVIEW -->
+<div class="panel active" id="panel-overview">
+  <p class="eyebrow">Week of Apr 11–17, 2026 · casavecchiavillas</p>
+  <h1 class="section-title">Performance overview</h1>
+  <p class="section-sub">Combined Instagram & Facebook metrics from your latest META export.</p>
+  <div class="metrics">
+    <div class="metric"><p class="metric-label">IG Views</p><div class="metric-val">16,559</div><p class="metric-sub down">▼ 21.4% vs prev week</p></div>
+    <div class="metric"><p class="metric-label">FB Views</p><div class="metric-val">82,315</div><p class="metric-sub up">▲ 151.5% vs prev week</p></div>
+    <div class="metric"><p class="metric-label">IG Engagement</p><div class="metric-val">7.53%</div><p class="metric-sub neu">≈ stable</p></div>
+    <div class="metric"><p class="metric-label">FB Engagement</p><div class="metric-val">7.39%</div><p class="metric-sub up">▲ strong week</p></div>
+    <div class="metric"><p class="metric-label">IG Saves</p><div class="metric-val">108</div><p class="metric-sub up">▲ 1.9%</p></div>
+    <div class="metric"><p class="metric-label">FB Comments</p><div class="metric-val">2,350</div><p class="metric-sub up">▲ 926%</p></div>
+  </div>
+  <div class="divider"></div>
+  <p class="eyebrow">Key findings</p>
+  <div class="findings">
+    <div class="finding f1">
+      <p class="finding-tag">Duration correlation</p>
+      <p class="finding-num">0.82</p>
+      <p class="finding-text">Correlation with saves. 64s video outperformed 21s by <strong>3.5×</strong> in total views.</p>
+      <div class="bar-rows">
+        <div class="bar-row"><span class="bar-lbl">Shares</span><div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--terra)"></div></div><span class="bar-val">0.80</span></div>
+        <div class="bar-row"><span class="bar-lbl">Saves</span><div class="bar-track"><div class="bar-fill" style="width:82%;background:var(--terra-d)"></div></div><span class="bar-val">0.82</span></div>
+      </div>
+    </div>
+    <div class="finding f2">
+      <p class="finding-tag">Narrative depth</p>
+      <p class="finding-num">8.58%</p>
+      <p class="finding-text">Engagement on 64s post vs <strong>4.73%</strong> for the 37s post — depth drives connection.</p>
+      <div class="bar-rows">
+        <div class="bar-row"><span class="bar-lbl">64s post</span><div class="bar-track"><div class="bar-fill" style="width:85.8%;background:var(--sage)"></div></div><span class="bar-val">8.58%</span></div>
+        <div class="bar-row"><span class="bar-lbl">37s post</span><div class="bar-track"><div class="bar-fill" style="width:47.3%;background:var(--sage-m)"></div></div><span class="bar-val">4.73%</span></div>
+      </div>
+    </div>
+    <div class="finding f3">
+      <p class="finding-tag">Audience insight</p>
+      <p class="finding-num" style="font-size:22px;margin-top:.3rem">Immersion</p>
+      <p class="finding-text">Your audience craves slow-living depth — they hunger for narrative, not highlights.</p>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div class="chart-card">
+      <p class="chart-title">Instagram views by post</p>
+      <p class="chart-sub">Apr 11–17 · by video duration</p>
+      <div class="chart-wrap"><canvas id="c-ig" role="img" aria-label="Instagram views per post by duration">37s=2207, 27s=5566, 21s=1952, 64s=6834 views</canvas></div>
+    </div>
+    <div class="chart-card">
+      <p class="chart-title">Engagement rate vs duration</p>
+      <p class="chart-sub">Longer content drives deeper engagement</p>
+      <div class="chart-wrap"><canvas id="c-eng" role="img" aria-label="Engagement rate vs video duration">21s=6.7%, 27s=7.6%, 37s=4.7%, 64s=8.6%</canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- WOW -->
+<div class="panel" id="panel-wow">
+  <p class="eyebrow">Performance review</p>
+  <h1 class="section-title">Week on week</h1>
+  <p class="section-sub">Apr 11–17 vs Apr 4–10. Add your team's observations below.</p>
+  <div class="chart-card">
+    <p class="chart-title">Views — both platforms</p>
+    <p class="chart-sub">Current week vs previous week</p>
+    <div class="chart-wrap" style="height:220px"><canvas id="c-wow" role="img" aria-label="Week on week views: IG current 16559 vs 21072, FB current 82315 vs 32724"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <p class="chart-title">Instagram engagement breakdown</p>
+    <p class="chart-sub">Current vs previous week</p>
+    <div class="chart-wrap" style="height:220px"><canvas id="c-igeng" role="img" aria-label="Instagram engagement metrics week on week comparison"></canvas></div>
+  </div>
+  <div class="wow-grid">
+    <div class="wow-col working">
+      <p class="wow-col-hd">✦ Working well</p>
+      <div id="wow-w-list">
+        <div class="wow-item"><span class="wow-dot"></span><div style="flex:1"><p class="wow-txt">64s villa morning routine</p><p class="wow-stat">8.58% eng · 3.2k saves</p></div><button class="wow-rm" onclick="this.closest('.wow-item').remove()">✕</button></div>
+        <div class="wow-item"><span class="wow-dot"></span><div style="flex:1"><p class="wow-txt">"People arrive tired" narrative hook</p><p class="wow-stat">4.1k shares · top comment: "this is me"</p></div><button class="wow-rm" onclick="this.closest('.wow-item').remove()">✕</button></div>
+        <div class="wow-item"><span class="wow-dot"></span><div style="flex:1"><p class="wow-txt">Facebook reach up 9,826% week on week</p><p class="wow-stat">67k reach · 2,350 comments</p></div><button class="wow-rm" onclick="this.closest('.wow-item').remove()">✕</button></div>
+      </div>
+      <div class="wow-input-row"><input class="wow-input" id="wow-w-in" placeholder="Add what's working…" onkeydown="if(event.key==='Enter')addWow('working')"/><button class="wow-add" onclick="addWow('working')">Add</button></div>
+    </div>
+    <div class="wow-col not-working">
+      <p class="wow-col-hd">✕ Not working</p>
+      <div id="wow-n-list">
+        <div class="wow-item"><span class="wow-dot"></span><div style="flex:1"><p class="wow-txt">21s highlight clips</p><p class="wow-stat">4.73% eng · low saves & shares</p></div><button class="wow-rm" onclick="this.closest('.wow-item').remove()">✕</button></div>
+        <div class="wow-item"><span class="wow-dot"></span><div style="flex:1"><p class="wow-txt">IG likes dropped 29.7%</p><p class="wow-stat">707 vs 1,005 previous week</p></div><button class="wow-rm" onclick="this.closest('.wow-item').remove()">✕</button></div>
+        <div class="wow-item"><span class="wow-dot"></span><div style="flex:1"><p class="wow-txt">Posting without a CTA</p><p class="wow-stat">Strong views but low conversion</p></div><button class="wow-rm" onclick="this.closest('.wow-item').remove()">✕</button></div>
+      </div>
+      <div class="wow-input-row"><input class="wow-input" id="wow-n-in" placeholder="Add what's not working…" onkeydown="if(event.key==='Enter')addWow('notworking')"/><button class="wow-add" onclick="addWow('notworking')">Add</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- TRENDING -->
+<div class="panel" id="panel-trending">
+  <p class="eyebrow">Top performing posts</p>
+  <h1 class="section-title">Trending content</h1>
+  <p class="section-sub">Your best posts this period. Heart the ones your team loves most.</p>
+  <div class="trending-controls">
+    <button class="filter-btn active" onclick="filterContent('all',this)">All</button>
+    <button class="filter-btn ig-f" onclick="filterContent('instagram',this)">📸 Instagram</button>
+    <button class="filter-btn fb-f" onclick="filterContent('facebook',this)">👥 Facebook</button>
+    <span style="font-size:11px;color:var(--brown-l);margin-left:auto">Sort by:</span>
+    <button class="filter-btn active" id="sort-eng" onclick="sortContent('engagement',this)">Engagement</button>
+    <button class="filter-btn" id="sort-views" onclick="sortContent('views',this)">Views</button>
+  </div>
+  <div class="content-grid" id="content-grid"></div>
+</div>
+
+<!-- FRAMEWORK -->
+<div class="panel" id="panel-framework">
+  <p class="eyebrow">Content structure</p>
+  <h1 class="section-title">The slow narrative framework</h1>
+  <p class="section-sub">Click each stage to expand full guidance for your team.</p>
+  <div class="steps">
+    <div class="step" onclick="toggleStep(this)">
+      <span class="step-num">1</span>
+      <p class="step-time">0 – 10 sec</p>
+      <p class="step-name">The hook</p>
+      <p class="step-desc">Name the emotional pain point immediately.</p>
+      <div class="step-detail"><p>Open with a line that mirrors what your ideal guest feels: <em>"People often arrive a little tired without fully realising it."</em></p><p>Identify the exact trigger — burnout, overstimulation, disconnection. Viewers who hear themselves will stay.</p></div>
+      <span class="step-arrow">▾</span>
+    </div>
+    <div class="step" onclick="toggleStep(this)">
+      <span class="step-num">2</span>
+      <p class="step-time">10 – 45 sec</p>
+      <p class="step-name">The immersion</p>
+      <p class="step-desc">ASMR, slow pans, rhythmic editing.</p>
+      <div class="step-detail"><p>3–5 second shots. No jump cuts. Sound design carries the scene — birds, terracotta on stone, linen rustling.</p><p>Goal: a <em>felt shift in the viewer's nervous system</em> before any CTA. They should exhale before seeing a price.</p></div>
+      <span class="step-arrow">▾</span>
+    </div>
+    <div class="step" onclick="toggleStep(this)">
+      <span class="step-num">3</span>
+      <p class="step-time">45 – 60 sec</p>
+      <p class="step-name">The shift</p>
+      <p class="step-desc">Introduce the environment that enables change.</p>
+      <div class="step-detail"><p>Show what changes when someone arrives. Villa, morning light, communal table. Make the environment feel like a character.</p><p>Text overlay at 45s: <em>"Spaces for May are filling…"</em> — scarcity planted gently before the CTA.</p></div>
+      <span class="step-arrow">▾</span>
+    </div>
+    <div class="step" onclick="toggleStep(this)">
+      <span class="step-num">4</span>
+      <p class="step-time">60+ sec</p>
+      <p class="step-name">The call to action</p>
+      <p class="step-desc">Clear, warm, specific. Monetisation happens here.</p>
+      <div class="step-detail"><p>Don't break the spell with hard-sell language. Invite: <em>"Comment RETREAT and we'll send the details."</em></p><p>Ensure your auto-response includes a direct booking link or beautifully formatted PDF brochure.</p></div>
+      <span class="step-arrow">▾</span>
+    </div>
+  </div>
+</div>
+
+<!-- MONETISATION -->
+<div class="panel" id="panel-monetise">
+  <p class="eyebrow">Revenue opportunities</p>
+  <h1 class="section-title">Monetisation strategies</h1>
+  <p class="section-sub">Toggle each strategy complete when your team has implemented it.</p>
+  <div class="strategies">
+    <div class="strategy" id="s1"><div class="strat-head"><p class="strat-title">Mid-roll CTA placement</p><button class="strat-toggle" onclick="toggleStrat('s1')">✓</button></div><div class="badge-row"><span class="badge b-hi">High impact</span><span class="badge b-lo">Low effort</span></div><p class="strat-impl"><strong>How:</strong> Add text overlay at 45s in your video editor — right before the emotional peak. One line, no hard sell.</p></div>
+    <div class="strategy" id="s2"><div class="strat-head"><p class="strat-title">Value-add saves content</p><button class="strat-toggle" onclick="toggleStrat('s2')">✓</button></div><div class="badge-row"><span class="badge b-hi">High impact</span><span class="badge b-med">Medium effort</span></div><p class="strat-impl"><strong>How:</strong> Produce 2–3 educational Reels/week at 90s+ — "A perfect slow morning in Tuscany." Saves drive algorithmic reach.</p></div>
+    <div class="strategy" id="s3"><div class="strat-head"><p class="strat-title">Direct booking integration</p><button class="strat-toggle" onclick="toggleStrat('s3')">✓</button></div><div class="badge-row"><span class="badge b-hi">High impact</span><span class="badge b-lo">Low effort</span></div><p class="strat-impl"><strong>How:</strong> Update "RETREAT" auto-response to include a direct booking link or PDF brochure immediately.</p></div>
+    <div class="strategy" id="s4"><div class="strat-head"><p class="strat-title">Seasonal content blocks</p><button class="strat-toggle" onclick="toggleStrat('s4')">✓</button></div><div class="badge-row"><span class="badge b-med">Medium impact</span><span class="badge b-med">Medium effort</span></div><p class="strat-impl"><strong>How:</strong> Plan content 2–3 weeks around retreat dates. Limited availability language increases urgency without aggression.</p></div>
+  </div>
+  <div id="strat-summary" style="display:none;margin-top:1.25rem;padding:.9rem 1.1rem;background:var(--sage-l);border-radius:10px;font-size:13px;color:var(--sage-d)"><strong id="strat-count">0 of 4</strong> strategies implemented · great progress!</div>
+</div>
+
+<!-- ACTION PLAN -->
+<div class="panel" id="panel-plan">
+  <p class="eyebrow">Execution roadmap</p>
+  <h1 class="section-title">3-week action plan</h1>
+  <p class="section-sub">Click a dot to mark done. Double-click text to edit. Use + to add tasks.</p>
+  <div class="weeks">
+    <div class="week wk1" id="wk1">
+      <p class="week-hd">Week 1 — Build</p>
+      <div class="task"><span class="task-dot" onclick="toggleTask(this)"></span><span class="task-txt" ondblclick="editTask(this)">Produce two 90s Reels: "A Day in the Life" or "History of the Villa"</span></div>
+      <div class="task"><span class="task-dot" onclick="toggleTask(this)"></span><span class="task-txt" ondblclick="editTask(this)">Test new hook: "You're not burnt out, you're under-stimulated"</span></div>
+      <div class="task"><span class="task-dot" onclick="toggleTask(this)"></span><span class="task-txt" ondblclick="editTask(this)">Set up mid-roll CTA text overlays at 45s mark</span></div>
+      <button class="add-task" onclick="addTask('wk1')">+ add task</button>
+    </div>
+    <div class="week wk2" id="wk2">
+      <p class="week-hd">Week 2 — Launch</p>
+      <div class="task"><span class="task-dot" onclick="toggleTask(this)"></span><span class="task-txt" ondblclick="editTask(this)">Launch "Educational Slow Living" series (3 tips for unplugging)</span></div>
+      <div class="task"><span class="task-dot" onclick="toggleTask(this)"></span><span class="task-txt" ondblclick="editTask(this)">Optimise "RETREAT" auto-response with booking link</span></div>
+      <div class="task"><span class="task-dot" onclick="toggleTask(this)"></span><span class="task-txt" ondblclick="editTask(this)">Analyse performance of 90s content vs baseline</span></div>
+      <button class="add-task" onclick="addTask('wk2')">+ add task</button>
+    </div>
+    <div class="week wk3" id="wk3">
+      <p class="week-hd">Week 3 — Scale</p>
+      <div class="task"><span class="task-dot" onclick="toggleTask(this)"></span><span class="task-txt" ondblclick="editTask(this)">Create seasonal content block for May 23–30 retreat</span></div>
+      <div class="task"><span class="task-dot" onclick="toggleTask(this)"></span><span class="task-txt" ondblclick="editTask(this)">Produce high-value "How to" guides at 120s+</span></div>
+      <div class="task"><span class="task-dot" onclick="toggleTask(this)"></span><span class="task-txt" ondblclick="editTask(this)">Review engagement metrics and refine strategy</span></div>
+      <button class="add-task" onclick="addTask('wk3')">+ add task</button>
+    </div>
+  </div>
+</div>
+
+</div>
+<div class="footer">Casa Vecchia Villas · Content Strategy Dashboard · April 2026</div>
+
+<!-- UPLOAD MODAL -->
+<div class="modal-overlay hidden" id="modal">
+  <div class="modal">
+    <p class="modal-title">Import META data</p>
+    <p class="modal-sub">Upload your latest export from Meta Business Suite. Go to Insights → Export Data and save as CSV, then upload here.</p>
+    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-in').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
+      <div class="dz-icon">📊</div>
+      <p class="dz-text"><strong>Click to upload</strong> or drag & drop your CSV here<br><span style="font-size:12px">Supports .csv and .xlsx exports from Meta Business Suite</span></p>
+    </div>
+    <input type="file" id="file-in" accept=".csv,.xlsx,.xls" style="display:none" onchange="handleFile(this)"/>
+    <div class="modal-fields">
+      <div><p class="field-label">Platform</p><select class="field-input" id="imp-platform"><option>Instagram</option><option>Facebook</option><option>Both</option></select></div>
+      <div><p class="field-label">Week ending</p><input type="date" class="field-input" id="imp-date"/></div>
+      <div><p class="field-label">Notes (optional)</p><input type="text" class="field-input" id="imp-notes" placeholder="e.g. Post-retreat content push"/></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-import" onclick="importData()">Import & update dashboard</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var contentData=[
+  {id:1,platform:'instagram',date:'Apr 17',caption:'People often arrive a little tired without fully realising it. The villa has a way of slowing everything down.',views:6834,likes:312,comments:41,shares:28,saves:47,engagement:8.58,duration:64,emoji:'🌿',liked:false},
+  {id:2,platform:'instagram',date:'Apr 12',caption:'A slow morning in Tuscany. No agenda, no rush. Just the sound of the valley waking up and coffee on the terrace.',views:5566,likes:198,comments:22,shares:19,saves:31,engagement:7.6,duration:27,emoji:'☀️',liked:false},
+  {id:3,platform:'instagram',date:'Apr 13',caption:'The light here does something to you. Guests arrive stressed and leave completely transformed.',views:1952,likes:97,comments:18,shares:14,saves:22,engagement:6.7,duration:21,emoji:'✨',liked:false},
+  {id:4,platform:'instagram',date:'Apr 11',caption:'Why slow travel is the new luxury. A retreat isn\'t an escape — it\'s a return to yourself.',views:2207,likes:100,comments:22,shares:27,saves:8,engagement:4.7,duration:37,emoji:'🏡',liked:false},
+  {id:5,platform:'facebook',date:'Apr 14',caption:'We still have two spaces left for the May 23–30 retreat. Comment RETREAT and we\'ll send you everything you need to know.',views:31200,likes:1102,comments:980,shares:41,saves:0,engagement:8.9,duration:0,emoji:'🌸',liked:false},
+  {id:6,platform:'facebook',date:'Apr 12',caption:'Casa Vecchia in spring — the garden is coming alive and the first guests of the season arrive this weekend.',views:22800,likes:801,comments:740,shares:33,saves:0,engagement:7.8,duration:0,emoji:'🌺',liked:false},
+  {id:7,platform:'facebook',date:'Apr 16',caption:'Slow living isn\'t something you have to earn. It\'s something you choose. Our May retreat is a space to make that choice.',views:18100,likes:403,comments:430,shares:14,saves:0,engagement:6.5,duration:0,emoji:'🕊️',liked:false},
+  {id:8,platform:'facebook',date:'Apr 11',caption:'Behind the scenes: how we set up for a retreat week — the table, the linen, the flowers, the light.',views:10215,likes:200,comments:200,shares:9,saves:0,engagement:5.2,duration:0,emoji:'🪴',liked:false}
+];
+var cFilter='all',cSort='engagement';
+
+function showPanel(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='trending')renderContent();
+  if(id==='wow')renderWowCharts();
+}
+
+var chartsBuilt={};
+function initOverviewCharts(){
+  if(chartsBuilt.ov)return;chartsBuilt.ov=true;
+  new Chart(document.getElementById('c-ig'),{type:'bar',data:{labels:['37s','27s','21s','64s'],datasets:[{label:'Views',data:[2207,5566,1952,6834],backgroundColor:['#D9856A','#D9856A','#D9856A','#C1603A'],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{callback:v=>v>=1000?(v/1000).toFixed(0)+'k':v}}}}});
+  new Chart(document.getElementById('c-eng'),{type:'line',data:{labels:['21s','27s','37s','64s'],datasets:[{label:'Eng%',data:[6.7,7.6,4.7,8.6],borderColor:'#6B8C6E',backgroundColor:'rgba(107,140,110,.12)',fill:true,tension:.4,pointBackgroundColor:'#6B8C6E',pointRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{callback:v=>v+'%'},min:0,max:12}}}});
+}
+function renderWowCharts(){
+  if(chartsBuilt.wow)return;chartsBuilt.wow=true;
+  new Chart(document.getElementById('c-wow'),{type:'bar',data:{labels:['Instagram','Facebook'],datasets:[{label:'Current week',data:[16559,82315],backgroundColor:'#C1603A',borderRadius:5},{label:'Prev week',data:[21072,32724],backgroundColor:'#EDE5D8',borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{callback:v=>v>=1000?(v/1000).toFixed(0)+'k':v}}}}});
+  new Chart(document.getElementById('c-igeng'),{type:'bar',data:{labels:['Likes','Comments','Shares','Saves'],datasets:[{label:'Current',data:[707,103,88,108],backgroundColor:'#6B8C6E',borderRadius:5},{label:'Previous',data:[1005,49,90,106],backgroundColor:'#E4EDE4',borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(0,0,0,.05)'}}}}});
+}
+
+function filterContent(f,btn){
+  cFilter=f;
+  document.querySelectorAll('.filter-btn:not(#sort-eng):not(#sort-views)').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderContent();
+}
+function sortContent(s,btn){
+  cSort=s;
+  document.querySelectorAll('#sort-eng,#sort-views').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderContent();
+}
+function renderContent(){
+  var data=contentData.filter(d=>cFilter==='all'||d.platform===cFilter);
+  data.sort((a,b)=>b[cSort]-a[cSort]);
+  var grid=document.getElementById('content-grid');grid.innerHTML='';
+  data.forEach(function(p){
+    var ec=p.engagement>=8?'eng-hi':p.engagement>=6?'eng-med':'eng-lo';
+    var pl=p.platform==='instagram'?'<span class="pill ig">📸 Instagram</span>':'<span class="pill fb">👥 Facebook</span>';
+    var dur=p.duration?'<span class="content-stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'+p.duration+'s</span>':'';
+    var lbg=p.liked?'background:var(--terra-l);border-color:var(--terra-m);color:var(--terra)':'';
+    var lico=p.liked?'currentColor':'none';
+    var ltxt=p.liked?'♥ Loved':'♡ Team like';
+    var c=document.createElement('div');c.className='content-card';c.setAttribute('data-id',p.id);
+    var bg=p.platform==='instagram'?'linear-gradient(135deg,#fce4ec,#f8bbd0)':'linear-gradient(135deg,#e3f2fd,#bbdefb)';
+    c.innerHTML='<div style="width:100%;height:155px;display:flex;align-items:center;justify-content:center;font-size:44px;background:'+bg+'">'+p.emoji+'</div><div class="content-body"><div class="content-head">'+pl+'<span class="content-date">'+p.date+'</span></div><p class="content-caption">'+p.caption+'</p><div class="content-stats"><span class="content-stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'+p.views.toLocaleString()+'</span><span class="content-stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'+p.likes.toLocaleString()+'</span><span class="content-stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'+p.comments+'</span>'+dur+'</div><div class="content-like-row"><button class="like-btn'+(p.liked?' liked':'')+'" style="'+lbg+'" onclick="teamLike('+p.id+',this)"><svg viewBox="0 0 24 24" fill="'+lico+'" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'+ltxt+'</button><span class="content-eng '+ec+'">'+p.engagement.toFixed(1)+'% eng</span></div></div>';
+    grid.appendChild(c);
+  });
+}
+function teamLike(id,btn){
+  var p=contentData.find(d=>d.id===id);if(!p)return;
+  p.liked=!p.liked;
+  btn.classList.toggle('liked',p.liked);
+  btn.style.background=p.liked?'var(--terra-l)':'';
+  btn.style.borderColor=p.liked?'var(--terra-m)':'';
+  btn.style.color=p.liked?'var(--terra)':'';
+  btn.querySelector('svg').setAttribute('fill',p.liked?'currentColor':'none');
+  btn.childNodes[1].textContent=p.liked?'♥ Loved':'♡ Team like';
+  if(p.liked)showToast('♥ Marked as team favourite');
+}
+
+function openModal(){document.getElementById('modal').classList.remove('hidden');document.getElementById('imp-date').valueAsDate=new Date()}
+function closeModal(){document.getElementById('modal').classList.add('hidden')}
+function dragOver(e){e.preventDefault();document.getElementById('drop-zone').classList.add('drag')}
+function dragLeave(){document.getElementById('drop-zone').classList.remove('drag')}
+function dropFile(e){e.preventDefault();dragLeave();var f=e.dataTransfer.files[0];if(f)processFile(f)}
+function handleFile(inp){if(inp.files[0])processFile(inp.files[0])}
+function processFile(f){document.querySelector('.dz-text').innerHTML='<strong>✓ '+f.name+'</strong><br><span style="font-size:12px;color:var(--brown-l)">Ready to import · '+Math.round(f.size/1024)+'KB</span>'}
+function importData(){closeModal();showToast('✓ META data imported — dashboard updated')}
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal()});
+
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
+function toggleStep(el){el.classList.toggle('open')}
+function toggleStrat(id){
+  var s=document.getElementById(id);s.classList.toggle('done');
+  var btn=s.querySelector('.strat-toggle'),done=s.classList.contains('done');
+  btn.style.background=done?'#6B8C6E':'';btn.style.borderColor=done?'#6B8C6E':'';btn.style.color=done?'white':'transparent';
+  var c=document.querySelectorAll('.strategy.done').length;
+  document.getElementById('strat-summary').style.display=c>0?'block':'none';
+  document.getElementById('strat-count').textContent=c+' of 4';
+}
+function toggleTask(dot){dot.classList.toggle('done');var t=dot.nextElementSibling;if(t)t.classList.toggle('done')}
+function editTask(el){
+  var val=el.textContent,inp=document.createElement('input');inp.className='task-edit';inp.value=val;
+  el.replaceWith(inp);inp.focus();inp.select();
+  function fin(){var s=document.createElement('span');s.className='task-txt';s.textContent=inp.value||val;s.ondblclick=function(){editTask(this)};inp.replaceWith(s)}
+  inp.onblur=fin;inp.onkeydown=function(e){if(e.key==='Enter')fin()};
+}
+function addTask(wkId){
+  var wk=document.getElementById(wkId),btn=wk.querySelector('.add-task');
+  var div=document.createElement('div');div.className='task';
+  var dot=document.createElement('span');dot.className='task-dot';dot.onclick=function(){toggleTask(this)};
+  var inp=document.createElement('input');inp.className='task-edit';inp.placeholder='New task…';
+  div.appendChild(dot);div.appendChild(inp);wk.insertBefore(div,btn);inp.focus();
+  function fin(){if(!inp.value.trim()){div.remove();return}var s=document.createElement('span');s.className='task-txt';s.textContent=inp.value;s.ondblclick=function(){editTask(this)};inp.replaceWith(s)}
+  inp.onblur=fin;inp.onkeydown=function(e){if(e.key==='Enter')fin()};
+}
+function addWow(type){
+  var inp=document.getElementById(type==='working'?'wow-w-in':'wow-n-in'),val=inp.value.trim();if(!val)return;
+  var list=document.getElementById(type==='working'?'wow-w-list':'wow-n-list');
+  var div=document.createElement('div');div.className='wow-item';
+  div.innerHTML='<span class="wow-dot"></span><div style="flex:1"><p class="wow-txt">'+val+'</p></div><button class="wow-rm" onclick="this.closest(\'.wow-item\').remove()">✕</button>';
+  list.appendChild(div);inp.value='';inp.focus();
+}
+initOverviewCharts();
+</script>
+</body>
+</html>
